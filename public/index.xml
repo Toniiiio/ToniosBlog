@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tonio Liebrand</title>
+    <link>/</link>
+    <description>Recent content on Tonio Liebrand</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Sun, 12 Jul 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>test</title>
+      <link>/post/test/</link>
+      <pubDate>Sun, 12 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/test/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Sneak preview sivis - Turning browser clicks intro reproducible scraping code</title>
+      <link>/blog/sneak-preview-sivis-turning-browser-clicks-intro-reproducible-scraping-code/</link>
+      <pubDate>Fri, 10 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/sneak-preview-sivis-turning-browser-clicks-intro-reproducible-scraping-code/</guid>
+      <description>Sivis enables you to select data in the browser by clicking on it and then generates r code for you to scrape this data periodically. For a preview see the following video.
+
+I am working on this package for over a year now. Maybe its too early to leave the pre-alpha state, but it guess there is a certain time to put it out there: Github repo.
+How does sivis work?</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Sun, 02 Oct 2016 22:55:05 -0400</pubDate>
+      
+      <guid>/about/</guid>
+      <description>My name is Tonio. I enjoy programming in R, especially working on the interface of webservers and R(Studio). Besides programming I love playing squash and road racing with my bike. I dream of bringing my paragliding licence to good use one day and spend my after works in the air.
+I graduated with a M.Sc. in quant. finance. Prior to working as a data scientist in Frankfurt I gained experience as a data analytics consultant and founded an analytics startup.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<meta name="description" content="Sivis Scraping">
+<meta name="keywords" content="blog, sivis, scraping">
+
+<title>
+  Tonio Liebrand - Sneak preview sivis - Turning browser clicks intro reproducible scraping code 
+</title>
+
+<meta name="generator" content="Hugo 0.73.0" />
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400|Roboto+Slab:400,700|Roboto:300,300i,400,400i,500,500i,700,700i">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="theme-color" content="#ffffff">
+
+</head>
+<body lang="en-US">
+<div class="container">
+
+
+<header class="row text-left title">
+  <h1 class="title">Sneak preview sivis - Turning browser clicks intro reproducible scraping code</h1>
+</header>
+<section id="category-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-left meta">
+        PUBLISHED ON JUL 10, 2020 
+      
+      
+      
+      
+    </h6>
+  </div>
+  
+</section>
+<section id="content-pane" class="row">
+  <div class="col-md-12 text-justify content">
+    
+    
+    
+    
+
+
+<p>Sivis enables you to select data in the browser by clicking on it and then generates r code for you to scrape this data periodically. For a preview see the following video.</p>
+<p><a href="https://www.youtube.com/watch?v=tFZ3os-GoNA"><img src="/img/youtube.png" alt="Sivis example" /></a></p>
+<p>I am working on this package for over a year now. Maybe its too early to leave the pre-alpha state, but it guess there is a certain time to put it out there: <a href="https://github.com/Toniiiio/sivis" target="_blank">Github repo</a>.</p>
+<div id="how-does-sivis-work" class="section level2">
+<h2>How does sivis work?</h2>
+<p>Scraping data can be summarized in three steps:</p>
+<ol style="list-style-type: decimal">
+<li><p>Identify a request that will return us a document containing the data we attempt to scrape</p></li>
+<li><p>Find a path to extract the data from the document</p></li>
+<li><p>Schedule, monitor and maintain the scraper</p></li>
+</ol>
+<p>Sivis well assist you building and monitoring scrapers by automising repetitive steps.</p>
+<p>This blog post introduces you to the basics of sivis.</p>
+<div id="request-identification" class="section level3">
+<h3>1. Request identification</h3>
+<div id="the-idea" class="section level4">
+<h4>The idea</h4>
+<p>When you learn about webscraping you are usually taught to differentiate between javascript and non-javascript pages and use httr/rvest or (r)selenium. You would either send a single request (httr/rvest) or trigger all requests (RSelenium) related to a web page.
+I think this differentiation is not wrong, but i would propose an alternative view.</p>
+<blockquote>
+<p>A website consists on average of 70 requests, only one will yield your target information. Why would you want to load the other 69?</p>
+</blockquote>
+<p>One might argue that it is not easy to identify the correct request among the ~70 candidates and tideous work to collect the relevant meta data for building GET / POST requests. That is correct, if it is attempted to be done manually. But sivis will assist you to automize this process as much as possible.</p>
+</div>
+<div id="in-a-nutshell" class="section level4">
+<h4>In a nutshell</h4>
+<p>The identification of the correct request will be performed in a chrome extension. When the user opens a webpage in chrome, the browser will automatically perform all required requests related to this webpage. My idea was to interpose this process and check the contents of all server responses for our target data. Moreover, we can save the meta data being used for the requests, like the request header and -body.
+To select the target data the user will be given the possibility to select texts within the browser.</p>
+<p>Aggregating this information will yield us a rich data set, which will be sufficient to build a scraper from within R.
+This dataset will be transformed to a JSON object and loaded into the clipboard from where it can be accessed in R.</p>
+</div>
+</div>
+<div id="path-extraction" class="section level3">
+<h3>2. Path extraction</h3>
+<p>In order to find a path to extract the data from a given document, we first have to load the server response in R by building and executing a valid request. We have the data that yielded a successful request from the browser. This data can not be used one to one, but is a great starting point and will yield succesful requests on most web pages that do not prohibit web scraping.</p>
+<p>Given this request we can download the document containg our target information. In order to find a path we first have to know which kind of document is present. It will be mostly either of type html/xml, a JSON or javascript code containing a JSON.*</p>
+<p>In case of an html/xml document an xpath will be generated to extract the target information. For JSONS the extraction mechanisms aren´t as powerful as xpath, but a similar path will be generated.</p>
+<p>At the heart of this step are the function get_xpath_by_tag or get_xpath_by_text. Given an xml/html document the node(s) containing the target data will be identified and then the xpath will be generated “going up the tree” without adding unrelevant data or leaving relevant data behind.</p>
+</div>
+<div id="setting-in-production" class="section level3">
+<h3>3. Setting in production</h3>
+<p>Webpage structures change over time: The relevant request, the related request header or -body, as well as pathes to extract the target data might change. The scrapers have to be updated accordingly.
+To identify failed scrapers a logging framework is required. As the source of errors for scrapers is limited and their occurence highly repetitive, a logging and monitoring framework will be built specific to the needs of web scraping.</p>
+</div>
+</div>
+<div id="deep-dive" class="section level2">
+<h2>Deep dive</h2>
+<p>For more information feel free to contact me directly or check the growing documentation on github.</p>
+<p>*It might rarely be the case that the target data is stored in unstructured text or the structure is intentionally modified that the document can´t be identified as a JSON or html.</p>
+</div>
+
+  </div>
+</section>
+<section id="tag-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-right meta">
+      
+      
+      
+      TAGS:
+      
+      
+      <a class="meta" href="/tags/r">R</a>, 
+      
+      <a class="meta" href="/tags/scraping">SCRAPING</a>, 
+      
+      <a class="meta" href="/tags/sivis">SIVIS</a>
+      
+      
+      
+    </h6>
+  </div>
+  
+</section>
+
+
+
+
+<section id="menu-pane" class="row menu text-center">
+  
+  
+  
+  
+  
+  <h4 class="text-center"><a class="menu-item" href="/">home</a></h4>
+</section>
+
+
+
+<footer class="row text-center footer">
+  <hr />
+  
+  <h6 class="text-center copyright">© 2020. Tonio Liebrand. <a href="http://creativecommons.org/licenses/by/3.0/">Some Rights Reserved</a>.</h6>
+  
+  <h6 class="text-center powered">Powered by <a href="https://gohugo.io/">Hugo  v0.73.0</a> &amp; <a href="https://github.com/shenoybr/hugo-goa">Goa</a>.</h6>
+  
+      
+      <h6><a href="" aria-label="RSS Feed"><i class="fas fa-rss" aria-hidden="true"></i></a></h6>
+    
+  
+</footer>
+
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  
+
+<script type="text/javascript">
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'XYZ', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="js/main.js"></script>
+<script src="js/custom.js"></script>
+</body>
+</html>
+
+

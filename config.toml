@@ -1,0 +1,62 @@
+## Basic Configuration
+
+baseurl = "https://Toniiiio.github.io"
+builddrafts = false
+canonifyurls = false
+languageCode = "en-US"
+
+contentdir = "content"
+layoutdir = "layouts"
+publishdir = "public"
+
+author = "Tonio Liebrand"
+title = "Tonio Liebrand"
+
+theme = "hugo-goa"
+
+## Hugo Built-in Features
+disqusShortname = "https-shenoybr-github-io-hugo-goa-demo" # Comment out to disable Disqus.
+googleAnalytics = "XYZ"
+enableRobotsTXT = true
+
+## Site Settings
+[params]
+author = "Tonio Liebrand"
+intro = "Another data scientist"
+description = "Building sivis. A framework to turn browser clicks into reproducible scraping code."
+authorimage = "headshot.jpg"
+dateformat = "Jan 2, 2006"
+
+## Site Meta Settings
+[params.meta]
+description = "Sivis Scraping"
+keywords = "blog, sivis, scraping"
+
+## Social Accounts
+[params.social]
+github = "Toniiiio"
+xing = "Tonio_Liebrand"
+linkedin = "big-data-scientist"
+stackoverflow = "3502164"
+email = "andreas.liebrand@hof.uni-frankfurt.de"
+
+## Extras
+[params.extra]
+copyright = "© 2020. Tonio Liebrand. [Some Rights Reserved](http://creativecommons.org/licenses/by/3.0/)."
+poweredby = true
+highlightjs = true
+socialmarkup = true
+toc = true
+displayrssicon = true
+ 
+## Main Menu
+[[menu.main]]
+    name = "blog"
+    weight = 100
+    identifier = "blog"
+    url = "./blog/"
+[[menu.main]]
+    name = "about"
+    identifier = "about"
+    weight = 200
+    url = "./about/"
